@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import PostList from "./components/PostList";
+import NewPostForm from "./components/NewPostForm";
+import HomeSection from "./components/HomeSection";
+import { Post } from "./types";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  const addPost = (newPost: Post) => {
+    setPosts([newPost, ...posts]);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container-fluid d-flex flex-column bg-dark text-white ">
+      <div className="row flex-grow-1">
+      <div className="col-3 border-end border-white text-white d-flex flex-column align-items-start p-3 ps-5">
+        <HomeSection />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <div className="col-6 overflow-auto">
+          <NewPostForm onPostAdded={addPost} />
+          <PostList />
+        </div>
+        <div className="col-3 border-start border-white d-flex flex-column align-items-center">
+          <h2 className="mt-5">Tendances</h2>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App
+export default App;
