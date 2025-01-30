@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Post } from "../types";
 
-const API_URL = "http://localhost:5000/posts"; // Change si nécessaire
+const API_URL = "http://localhost:5000/posts";
 
 const PostList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -19,7 +20,10 @@ const PostList = () => {
       <div className="list-group">
         {posts.map((post) => (
           <div key={post.id} className="list-group-item">
-            <strong>@{post.author}</strong> <small className="text-muted">{new Date(post.created_at).toLocaleString()}</small>
+            <Link to={`/user/${post.user.username}`}>
+              <strong>@{post.user.username}</strong>
+            </Link>
+            <small className="text-muted">{new Date(post.created_at).toLocaleString()}</small>
             <p>{post.content}</p>
             <div className="d-flex justify-content-end gap-3">
               <i className="bi bi-heart"></i>
