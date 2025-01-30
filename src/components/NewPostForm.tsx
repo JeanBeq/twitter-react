@@ -30,7 +30,7 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
       const newPost = await response.json();
       onPostAdded(newPost);
       setContent("");
-      refreshPosts(); // Appeler la fonction de rafraîchissement des tweets
+      refreshPosts();
     } catch (err) {
       console.error("Erreur:", err);
       await saveForLater({ content, token });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Post } from "../types";
+import { useAuth } from "../context/AuthContext";
 
 interface User {
   id: number;
@@ -13,13 +14,20 @@ interface User {
 const UserProfile = () => {
   const { username } = useParams<{ username: string }>();
   const [user, setUser] = useState<User | null>(null);
+  const { token } = useAuth();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${username}`)
+    if (!token) return;
+
+    fetch(`http://localhost:5000/users/${username}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setUser(data))
       .catch((err) => console.error("Erreur:", err));
-  }, [username]);
+  }, [username, token]);
 
   if (!user) {
     return <div>Chargement...</div>;

@@ -1,6 +1,6 @@
 import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { CacheFirst, NetworkFirst } from "workbox-strategies";
+import { NetworkFirst } from "workbox-strategies";
 
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
