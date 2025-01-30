@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Post } from "../types";
 import { useAuth } from "../context/AuthContext";
+import { openDB } from "idb";
 
 const API_URL = "http://localhost:5000/posts";
 
@@ -8,25 +9,32 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
   const [content, setContent] = useState("");
   const { token } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content) return;
 
-    fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({ content }),
-    })
-      .then((res) => res.json())
-      .then((newPost) => {
-        onPostAdded(newPost);
-        setContent("");
-        refreshPosts(); // Appeler la fonction de rafraîchissement des tweets
-      })
-      .catch((err) => console.error("Erreur:", err));
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const newPost = await response.json();
+      onPostAdded(newPost);
+      setContent("");
+      refreshPosts(); // Appeler la fonction de rafraîchissement des tweets
+    } catch (err) {
+      console.error("Erreur:", err);
+      await saveForLater({ content, token });
+    }
   };
 
   return (
@@ -44,5 +52,15 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
     </form>
   );
 };
+
+async function saveForLater(data: any) {
+  const db = await openDB('offline-sync', 1, {
+    upgrade(db) {
+      db.createObjectStore('posts', { keyPath: 'id', autoIncrement: true });
+    }
+  });
+
+  await db.add('posts', data);
+}
 
 export default NewPostForm;

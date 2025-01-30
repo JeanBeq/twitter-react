@@ -18,7 +18,6 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Inscription API Response:", data);
         if (data.token) {
           login(data.token, data.user.username);
         } else {

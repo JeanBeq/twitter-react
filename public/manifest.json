@@ -1,0 +1,13 @@
+{
+    "name": "Contrefaçon de Twitter",
+    "short_name": "Twitter",
+    "start_url": ".",
+    "icons": [{
+        "src": "/icons/icon.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any"
+    }],
+    "display": "standalone",
+    "id": "2025-faux-twitter"
+}

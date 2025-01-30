@@ -7,6 +7,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script async>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      } else {
+        console.warn('Service workers are not supported in this browser.');
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

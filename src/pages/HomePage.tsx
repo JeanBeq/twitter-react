@@ -24,12 +24,27 @@ const HomePage = () => {
   const refreshPosts = () => {
     fetch("http://localhost:5000/posts")
       .then((res) => res.json())
-      .then((data) => setPosts(data))
+      .then((data) => {
+        setPosts(data);
+        caches.open('twitter-react-cache-v1').then((cache) => {
+          cache.put('posts', new Response(JSON.stringify(data)));
+        });
+      })
       .catch((err) => console.error("Erreur:", err));
   };
 
   useEffect(() => {
-    refreshPosts();
+    caches.open('twitter-react-cache-v1').then((cache) => {
+      cache.match('posts').then((response) => {
+        if (response) {
+          response.json().then((cachedPosts) => {
+            setPosts(cachedPosts);
+          });
+        } else {
+          refreshPosts();
+        }
+      });
+    });
   }, []);
 
   return (

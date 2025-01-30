@@ -17,7 +17,6 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Connexion API Response:", data);
         if (data.token) {
           login(data.token, data.user.username);
         } else {

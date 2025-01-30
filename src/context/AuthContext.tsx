@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext } from "react";
+import { createContext, useState, ReactNode, useContext, useEffect } from "react";
 
 interface AuthContextType {
   token: string | null;
@@ -13,11 +13,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [username, setUsername] = useState<string | null>(localStorage.getItem("username"));
 
+  useEffect(() => {
+    caches.open('twitter-react-cache-v1').then((cache) => {
+      cache.match('username').then((response) => {
+        if (response) {
+          response.text().then((cachedUsername) => {
+            setUsername(cachedUsername);
+          });
+        }
+      });
+    });
+  }, []);
+
   const login = (token: string, username: string) => {
     setToken(token);
     setUsername(username);
     localStorage.setItem("token", token);
     localStorage.setItem("username", username);
+
+    caches.open('twitter-react-cache-v1').then((cache) => {
+      cache.put('username', new Response(username));
+    });
   };
 
   const logout = () => {
@@ -25,6 +41,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUsername(null);
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+
+    caches.open('twitter-react-cache-v1').then((cache) => {
+      cache.delete('username');
+    });
   };
 
   return (
