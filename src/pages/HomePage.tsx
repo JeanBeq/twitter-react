@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import PostList from "../components/PostList";
 import NewPostForm from "../components/NewPostForm";
@@ -21,8 +21,19 @@ const HomePage = () => {
     setPosts([newPost, ...posts]);
   };
 
+  const refreshPosts = () => {
+    fetch("http://localhost:5000/posts")
+      .then((res) => res.json())
+      .then((data) => setPosts(data))
+      .catch((err) => console.error("Erreur:", err));
+  };
+
+  useEffect(() => {
+    refreshPosts();
+  }, []);
+
   return (
-    <div className="container-fluid d-flex flex-column bg-dark text-white vh-100">
+    <div className="container-fluid d-flex flex-column bg-dark text-white min-vh-100">
       <div className="row flex-grow-1">
         <div className="col-3 border-end border-white text-white d-flex flex-column align-items-start p-3 ps-5">
           <HomeSection />
@@ -32,7 +43,7 @@ const HomePage = () => {
             <Route path="/" element={token ? (
               <>
                 <h2>Bienvenue, {username}!</h2>
-                <NewPostForm onPostAdded={addPost} />
+                <NewPostForm onPostAdded={addPost} refreshPosts={refreshPosts} />
                 <PostList />
               </>
             ) : (

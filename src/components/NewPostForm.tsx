@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const API_URL = "http://localhost:5000/posts";
 
-const NewPostForm = ({ onPostAdded }: { onPostAdded: (post: Post) => void }) => {
+const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) => void, refreshPosts: () => void }) => {
   const [content, setContent] = useState("");
   const { token } = useAuth();
 
@@ -24,6 +24,7 @@ const NewPostForm = ({ onPostAdded }: { onPostAdded: (post: Post) => void }) => 
       .then((newPost) => {
         onPostAdded(newPost);
         setContent("");
+        refreshPosts(); // Appeler la fonction de rafraîchissement des tweets
       })
       .catch((err) => console.error("Erreur:", err));
   };
