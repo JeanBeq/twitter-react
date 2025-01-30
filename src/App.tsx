@@ -5,6 +5,7 @@ import HomeSection from "./components/HomeSection";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import UserProfile from "./pages/UserProfil";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -41,7 +42,11 @@ const AppContent = () => {
                 <LoginForm onSwitchToRegister={() => setIsRegistering(true)} />
               )
             )} />
-            <Route path="/user/:username" element={<UserProfile />} />
+            <Route path="/user/:username" element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
         <div className="col-3 border-start border-white d-flex flex-column align-items-center">
