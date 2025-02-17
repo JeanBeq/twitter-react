@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import PostList from "../components/PostList";
 import NewPostForm from "../components/NewPostForm";
@@ -24,28 +24,9 @@ const HomePage = () => {
   const refreshPosts = () => {
     fetch("http://localhost:5000/posts")
       .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-        caches.open('twitter-react-cache-v1').then((cache) => {
-          cache.put('posts', new Response(JSON.stringify(data)));
-        });
-      })
+      .then((data) => setPosts(data))
       .catch((err) => console.error("Erreur:", err));
   };
-
-  useEffect(() => {
-    caches.open('twitter-react-cache-v1').then((cache) => {
-      cache.match('posts').then((response) => {
-        if (response) {
-          response.json().then((cachedPosts) => {
-            setPosts(cachedPosts);
-          });
-        } else {
-          refreshPosts();
-        }
-      });
-    });
-  }, []);
 
   return (
     <div className="container-fluid d-flex flex-column bg-dark text-white min-vh-100">

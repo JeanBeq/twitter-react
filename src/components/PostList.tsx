@@ -11,7 +11,14 @@ const PostList = () => {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => setPosts(data))
-      .catch((err) => console.error("Erreur:", err));
+      .catch((err) => {
+        console.error("Erreur:", err);
+        caches.match(API_URL).then((response) => {
+          if (response) {
+            response.json().then((cachedData) => setPosts(cachedData));
+          }
+        });
+      });
   }, []);
 
   return (
