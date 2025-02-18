@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import PostList from "../components/PostList";
 import NewPostForm from "../components/NewPostForm";
@@ -13,17 +13,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 const HomePage = () => {
-  // État pour stocker les posts
   const [posts, setPosts] = useState<Post[]>([]);
   const { token, username } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
 
-  // Fonction pour ajouter un nouveau post
+  useEffect(() => {
+    refreshPosts();
+  }, []);
+
   const addPost = (newPost: Post) => {
     setPosts([newPost, ...posts]);
   };
 
-  // Fonction pour rafraîchir la liste des posts
   const refreshPosts = () => {
     fetch("http://localhost:5000/posts")
       .then((res) => res.json())
@@ -43,7 +44,7 @@ const HomePage = () => {
               <>
                 <h2>Bienvenue, {username}!</h2>
                 <NewPostForm onPostAdded={addPost} refreshPosts={refreshPosts} />
-                <PostList />
+                <PostList posts={posts} />
               </>
             ) : (
               isRegistering ? (

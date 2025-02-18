@@ -1,40 +1,9 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Post } from "../types";
-import { useAuth } from "../context/AuthContext";
 
-const API_URL = "http://localhost:5000/posts";
 const IMAGE_BASE_URL = "http://localhost:5000";
 
-const PostList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const { token, handleUnauthorized } = localStorage.getItem("token") ? useAuth() : { token: null, handleUnauthorized: () => {} };
-
-  useEffect(() => {
-    if (!token) return;
-    fetch(API_URL, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.status === 401) {
-          handleUnauthorized();
-        } else {
-          return res.json();
-        }
-      })
-      .then((data) => setPosts(data))
-      .catch((err) => {
-        console.error("Erreur:", err);
-        caches.match(API_URL).then((response) => {
-          if (response) {
-            response.json().then((cachedData) => setPosts(cachedData));
-          }
-        });
-      });
-  }, [token, handleUnauthorized]);
-
+const PostList = ({ posts }: { posts: Post[] }) => {
   return (
     <div className="container mt-4">
       <h2>Derniers posts</h2>
