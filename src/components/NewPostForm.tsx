@@ -29,11 +29,12 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
 
       const newPost = await response.json();
       onPostAdded(newPost);
-      setContent("");
       refreshPosts();
     } catch (err) {
       console.error("Erreur:", err);
       await saveForLater({ content, token });
+    } finally {
+      setContent("");
     }
   };
 
@@ -54,20 +55,17 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
 };
 
 // Fonction pour sauvegarder le post pour plus tard en cas d'erreur réseau
-async function saveForLater(data: any){
-  const db = await openDB(
-      'offline-sync',
-      1,
-      {
-          upgrade(db){
-              db.createObjectStore('posts', { autoIncrement: true })
-          }
-      }
-  );
+async function saveForLater(data: any) {
+  const db = await openDB('offline-sync', 1, {
+    upgrade(db) {
+      db.createObjectStore('posts', { autoIncrement: true });
+    },
+  });
 
-  await db.add('posts', JSON.stringify({...data, token: {token}}));
+  // Stocke directement le token comme une chaîne
+  await db.add('posts', JSON.stringify({ ...data, token }));
 
-  const serviceWorker : any = await navigator.serviceWorker.ready;
+  const serviceWorker: any = await navigator.serviceWorker.ready;
   await serviceWorker.sync.register('sync-new-posts');
 }
 
