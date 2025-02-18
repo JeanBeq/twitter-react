@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Post } from "../types";
+import { useAuth } from "../context/AuthContext";
 
 const API_URL = "http://localhost:5000/posts";
 
 const PostList = () => {
   // État pour stocker les posts
   const [posts, setPosts] = useState<Post[]>([]);
+  const { token, handleUnauthorized } = localStorage.getItem("token") ? useAuth() : { token: null, handleUnauthorized: () => {} };
 
   useEffect(() => {
+    if (!token) return;
     // Fait une requête pour récupérer les posts
-    fetch(API_URL)
-      .then((res) => res.json())
+    fetch(API_URL, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          handleUnauthorized();
+        } else {
+          return res.json();
+        }
+      })
       .then((data) => setPosts(data))
       .catch((err) => {
         console.error("Erreur:", err);
@@ -22,7 +35,7 @@ const PostList = () => {
           }
         });
       });
-  }, []);
+  }, [token, handleUnauthorized]);
 
   return (
     <div className="container mt-4">
