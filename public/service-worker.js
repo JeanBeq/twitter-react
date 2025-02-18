@@ -33,6 +33,18 @@ registerRoute(
   })
 );
 
+registerRoute(
+  ({ url }) => url.origin === 'https://cdn.jsdelivr.net' && url.pathname.startsWith('/npm/bootstrap-icons@'),
+  new CacheFirst({
+    cacheName: 'bootstrap-icons',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+    ],
+  })
+);
+
 self.addEventListener('sync', function(event) {
   if (event.tag === 'sync-posts') {
     event.waitUntil(
