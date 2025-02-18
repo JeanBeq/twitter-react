@@ -4,15 +4,14 @@ import { Post } from "../types";
 import { useAuth } from "../context/AuthContext";
 
 const API_URL = "http://localhost:5000/posts";
+const IMAGE_BASE_URL = "http://localhost:5000";
 
 const PostList = () => {
-  // État pour stocker les posts
   const [posts, setPosts] = useState<Post[]>([]);
   const { token, handleUnauthorized } = localStorage.getItem("token") ? useAuth() : { token: null, handleUnauthorized: () => {} };
 
   useEffect(() => {
     if (!token) return;
-    // Fait une requête pour récupérer les posts
     fetch(API_URL, {
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -28,7 +27,6 @@ const PostList = () => {
       .then((data) => setPosts(data))
       .catch((err) => {
         console.error("Erreur:", err);
-        // Utilise les données en cache en cas d'erreur
         caches.match(API_URL).then((response) => {
           if (response) {
             response.json().then((cachedData) => setPosts(cachedData));
@@ -48,6 +46,7 @@ const PostList = () => {
             </Link>
             <small className="text-muted">{new Date(post.created_at).toLocaleString()}</small>
             <p>{post.content}</p>
+            {post.photoUrl && <img src={`${IMAGE_BASE_URL}${post.photoUrl}`} alt="Post photo" className="img-fluid" />}
             <div className="d-flex justify-content-end gap-3">
               <i className="bi bi-heart"></i>
               <i className="bi bi-arrow-repeat"></i>
