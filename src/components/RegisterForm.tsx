@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 const API_URL = "http://localhost:5000/auth/register";
 
 const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
+  // États pour stocker l'email, le nom d'utilisateur et le mot de passe
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -11,6 +12,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Fait une requête pour s'inscrire
     fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,6 +21,7 @@ const RegisterForm = ({ onSwitchToLogin }: { onSwitchToLogin: () => void }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.token) {
+          // Si l'inscription est réussie, enregistre le token et le nom d'utilisateur
           login(data.token, data.user.username);
         } else {
           console.error("Erreur:", data.error);

@@ -2,6 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 function HomeSection() {
+  // Récupère le token, la fonction de déconnexion et le nom d'utilisateur
   const { token, logout, username } = useAuth();
 
   return (

@@ -5,14 +5,17 @@ import { Post } from "../types";
 const API_URL = "http://localhost:5000/posts";
 
 const PostList = () => {
+  // État pour stocker les posts
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
+    // Fait une requête pour récupérer les posts
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => setPosts(data))
       .catch((err) => {
         console.error("Erreur:", err);
+        // Utilise les données en cache en cas d'erreur
         caches.match(API_URL).then((response) => {
           if (response) {
             response.json().then((cachedData) => setPosts(cachedData));

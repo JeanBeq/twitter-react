@@ -4,12 +4,14 @@ import { useAuth } from "../context/AuthContext";
 const API_URL = "http://localhost:5000/auth/login";
 
 const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) => {
+  // États pour stocker l'email et le mot de passe
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Fait une requête pour se connecter
     fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -18,6 +20,7 @@ const LoginForm = ({ onSwitchToRegister }: { onSwitchToRegister: () => void }) =
       .then((res) => res.json())
       .then((data) => {
         if (data.token) {
+          // Si la connexion est réussie, enregistre le token et le nom d'utilisateur
           login(data.token, data.user.username);
         } else {
           console.error("Erreur:", data.error);

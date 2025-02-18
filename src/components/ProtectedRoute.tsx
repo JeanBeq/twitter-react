@@ -6,6 +6,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { token } = useAuth();
 
   if (!token) {
+    // Redirige vers la page d'accueil si l'utilisateur n'est pas authentifié
     return <Navigate to="/" replace />;
   }
 

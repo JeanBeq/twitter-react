@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Post } from "../types";
 import { useAuth } from "../context/AuthContext";
 
+// Interface pour représenter un utilisateur
 interface User {
   id: number;
   username: string;
@@ -12,24 +13,35 @@ interface User {
 }
 
 const UserProfile = () => {
+  // Récupère le paramètre 'username' de l'URL
   const { username } = useParams<{ username: string }>();
+  // État pour stocker les informations de l'utilisateur
   const [user, setUser] = useState<User | null>(null);
-  const { token } = useAuth();
+  // Récupère le token d'authentification et la fonction de gestion des erreurs
+  const { token, handleUnauthorized } = localStorage.getItem("token") ? useAuth() : { token: null, handleUnauthorized: () => {} };
 
   useEffect(() => {
     if (!token) return;
-
+    // Fait une requête pour récupérer les informations de l'utilisateur
     fetch(`http://localhost:5000/users/${username}`, {
       headers: {
         "Authorization": `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) {
+          // Gère les erreurs d'authentification
+          handleUnauthorized();
+        } else {
+          return res.json();
+        }
+      })
       .then((data) => setUser(data))
       .catch((err) => console.error("Erreur:", err));
-  }, [username, token]);
+  }, [username, token, handleUnauthorized]);
 
   if (!user) {
+    // Affiche un message de chargement si les données ne sont pas encore disponibles
     return <div>Chargement...</div>;
   }
 
