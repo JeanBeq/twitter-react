@@ -60,7 +60,7 @@ async function saveForLater(data: any){
       1,
       {
           upgrade(db){
-              db.createObjectStore('posts', {autoIncrement: true})
+              db.createObjectStore('posts', { autoIncrement: true })
           }
       }
   );

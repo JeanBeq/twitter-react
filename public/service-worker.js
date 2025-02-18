@@ -46,11 +46,12 @@ registerRoute(
 );
 
 self.addEventListener('sync', function(event) {
-  if (event.tag === 'sync-posts') {
+  if (event.tag === 'sync-new-posts') {
     event.waitUntil(
       (async () => {
         const db = await openDB('offline-sync', 1);
         const keys = await db.getAllKeys('posts') || [];
+        console.log('keys', keys);
         if (keys.length > 0) {
           await Promise.all(
             keys.map(async (key) => {
