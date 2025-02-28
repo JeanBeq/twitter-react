@@ -67,6 +67,43 @@ self.addEventListener('sync', function(event) {
   }
 });
 
+// Événement appelé lors de la réception d'une notification
+self.addEventListener('push', function(event) {
+  console.log("Received push notification", event);
+
+  const notificationData = event.data.json();
+
+  if (notificationData.type === "POST_CREATED") {
+      self.registration.showNotification(
+          notificationData.title,
+          {
+              body: notificationData.body,
+              icon: '/icon_144.png',
+              actions: [
+                  { 'title': 'Consulter', 'action': 'open' },
+                  { 'title': 'Ignorer', 'action': 'ignore' },
+              ],
+              data: {
+                  type: "POST_CREATED"
+              }
+          }
+      );
+  }
+});
+
+// Événement appelé lorsque l'utilisateur clique sur une action de la notification
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+
+  if (event.action === 'open') {
+      clients.openWindow('/'); // Ouvrir la page d'accueil ou une page spécifique
+  } else if (event.action === 'ignore') {
+      // Ne rien faire
+  } else {
+      clients.openWindow('/'); // Ouvrir la page d'accueil ou une page spécifique
+  }
+});
+
 async function sendPost(db, key, post) {
   try {
     const response = await fetch(API_URL, {
