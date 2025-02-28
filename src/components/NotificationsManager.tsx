@@ -4,13 +4,16 @@ import { urlB64ToUint8Array } from "../utils/urlB64ToUint8Array";
 const PUBLIC_PUSH_KEY = import.meta.env.VITE_PUBLIC_PUSH_KEY as string;
 
 function NotificationsManager() {
+    // État pour savoir si l'utilisateur est abonné aux notifications
     const [subscribed, setSubscribed] = useState<Boolean>(false);
 
+    // Fonction pour tester l'envoi d'une notification
     async function testNotification() {
         await Notification.requestPermission();
         new Notification("Test notification");
     }
 
+    // Fonction pour s'abonner aux notifications push
     async function subscribe() {
         const perm = await Notification.requestPermission();
 

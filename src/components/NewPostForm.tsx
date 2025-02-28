@@ -6,6 +6,7 @@ const API_URL = "http://localhost:5000/posts";
 const token = localStorage.getItem("token");
 
 const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) => void, refreshPosts: () => void }) => {
+  // États pour stocker le contenu du post et la photo
   const [content, setContent] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,6 +22,7 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
     }
 
     try {
+      // Fait une requête pour ajouter un nouveau post
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -92,6 +94,7 @@ const NewPostForm = ({ onPostAdded, refreshPosts }: { onPostAdded: (post: Post) 
   );
 };
 
+// Fonction pour sauvegarder le post pour plus tard en cas d'erreur réseau
 async function saveForLater(data: any) {
   const db = await openDB('offline-sync', 1, {
     upgrade(db) {

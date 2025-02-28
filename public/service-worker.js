@@ -9,6 +9,7 @@ const API_URL = "http://localhost:5000/posts";
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
+// Route pour les requêtes API
 registerRoute(
   ({ url }) => url.pathname.startsWith('/posts') || url.pathname.startsWith('/users'),
   new NetworkFirst({
@@ -21,6 +22,7 @@ registerRoute(
   })
 );
 
+// Route pour les assets statiques
 registerRoute(
   ({ request }) => request.destination === 'script' || request.destination === 'style' || request.destination === 'image',
   new CacheFirst({
@@ -33,6 +35,7 @@ registerRoute(
   })
 );
 
+// Route pour les icônes Bootstrap
 registerRoute(
   ({ url }) => url.origin === 'https://cdn.jsdelivr.net' && url.pathname.startsWith('/npm/bootstrap-icons@'),
   new CacheFirst({
@@ -45,6 +48,7 @@ registerRoute(
   })
 );
 
+// Événement de synchronisation en arrière-plan
 self.addEventListener('sync', function(event) {
   if (event.tag === 'sync-new-posts') {
     console.log("Syncing new posts...");
@@ -104,6 +108,7 @@ self.addEventListener('notificationclick', function(event) {
   }
 });
 
+// Fonction pour envoyer un post au serveur
 async function sendPost(db, key, post) {
   try {
     const response = await fetch(API_URL, {

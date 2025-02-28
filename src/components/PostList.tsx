@@ -10,11 +10,13 @@ const PostList = ({ posts }: { posts: Post[] }) => {
       <div className="list-group">
         {posts.map((post) => (
           <div key={post.id} className="list-group-item">
+            {/* Lien vers le profil de l'utilisateur */}
             <Link to={`/user/${post.user.username}`}>
               <strong>@{post.user.username}</strong>
             </Link>
             <small className="text-muted">{new Date(post.created_at).toLocaleString()}</small>
             <p>{post.content}</p>
+            {/* Affiche la photo du post si elle existe */}
             {post.photoUrl && <img src={`${IMAGE_BASE_URL}${post.photoUrl}`} alt="Post photo" className="img-fluid" />}
             <div className="d-flex justify-content-end gap-3">
               <i className="bi bi-heart"></i>
